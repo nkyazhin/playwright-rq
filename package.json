@@ -1,0 +1,50 @@
+{
+  "name": "playwright-rq",
+  "version": "1.0.0",
+  "description": "playwright request mocker",
+  "main": "lib/index.js",
+  "scripts": {
+    "jest": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nkyazhin/playwright-rq.git"
+  },
+  "keywords": [
+    "playwright",
+    "request",
+    "mocker",
+    "interceptor",
+    "response"
+  ],
+  "author": "nikita.kryazhin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nkyazhin/playwright-rq/issues"
+  },
+  "homepage": "https://github.com/nkyazhin/playwright-rq#readme",
+  "dependencies": {
+    "boxen": "^4.2.0",
+    "debug": "^4.1.1",
+    "make-dir": "^3.1.0",
+    "yamlify-object": "^0.5.1",
+    "yamlify-object-colors": "^1.0.3",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "express": "^4.17.1",
+    "husky": "^2.7.0",
+    "jest": "^26.1.0",
+    "playwright": "1.6.2",
+    "wait-port": "^0.2.9"
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "tests"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run jest"
+    }
+  }
+}
