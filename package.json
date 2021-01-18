@@ -1,6 +1,6 @@
 {
   "name": "playwright-rq",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "playwright request mocker",
   "main": "lib/index.js",
   "scripts": {
