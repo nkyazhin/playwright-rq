@@ -32,7 +32,7 @@ const options = {
     '_api/method': 'mockFilePath',
     '_api/method2': {
       GET: 'getMockFilePath',
-      POST: 'postMockFilePath',
+      POST: 'postMockFilePath'
     },
     '_api/method3': {
       GET: {
@@ -41,7 +41,7 @@ const options = {
           test: '123'
         }
       }
-    }, 
+    },
     '_api/method4': {
       GET: {
         body: 'response',
@@ -55,7 +55,27 @@ const options = {
           'Content-Type': 'application/json'
         }
       }
-    } 
+    },
+    '_api/method5': {
+      POST: {
+        complex: [
+          {
+            filePath: "get_api",
+            requestBody: {
+              test: 'value_1',
+              param: 'value'
+            }
+          },
+          {
+            filePath: "get_api_2",
+            requestBody: {
+              test: 'value_2',
+              param: 'value'
+            }
+          }
+        ]
+      }
+    }
   },
   // default: false
   // interruption of requests that are not in mockList and request.resourceType() == 'xhr' or 'fetch'
