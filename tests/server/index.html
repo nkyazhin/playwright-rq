@@ -37,7 +37,9 @@
 
 <body>
 <div class='wrap'>
-    <input type='button' id='button' />
+    <input type='button' id='button' value="get_btn"/>
+    <input type='button' id='button2' value="post_btn"/>
+    <input type='button' id='button3' value="post_btn"/>
     <div class='response-body' hidden></div>
     <div class='response-headers' hidden></div>
 </div>
@@ -48,6 +50,56 @@
     document.querySelector('#button').addEventListener('click', (e) => {
         const query = e.target.value;
         fetch('/api?test=123&test2=false')
+            .then(res => {
+              res.json()
+                .then(j => {
+                  responseBody.innerText = JSON.stringify(j);
+                  responseBody.hidden = false;
+                })
+                .catch(e => {
+                  responseBody.innerText = res.body;
+                  responseBody.hidden = false;
+                });
+              responseHeaders.innerText = res.headers.get('Content-Type');
+              responseHeaders.hidden = false;
+            })
+          .catch(error => {
+            responseBody.innerText = 'error';
+            responseBody.hidden = false;
+          })
+    })
+
+    document.querySelector('#button2').addEventListener('click', (e) => {
+        const query = e.target.value;
+        fetch('/api', {
+            method: 'POST',
+            body: JSON.stringify({test: 'value_1', param: 'value'})
+        })
+            .then(res => {
+              res.json()
+                .then(j => {
+                  responseBody.innerText = JSON.stringify(j);
+                  responseBody.hidden = false;
+                })
+                .catch(e => {
+                  responseBody.innerText = res.body;
+                  responseBody.hidden = false;
+                });
+              responseHeaders.innerText = res.headers.get('Content-Type');
+              responseHeaders.hidden = false;
+            })
+          .catch(error => {
+            responseBody.innerText = 'error';
+            responseBody.hidden = false;
+          })
+    })
+
+    document.querySelector('#button3').addEventListener('click', (e) => {
+        const query = e.target.value;
+        fetch('/api', {
+            method: 'POST',
+            body: JSON.stringify({test: 'value_2', param: 'value'})
+        })
             .then(res => {
               res.json()
                 .then(j => {

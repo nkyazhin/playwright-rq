@@ -29,13 +29,14 @@
     "make-dir": "^3.1.0",
     "yamlify-object": "^0.5.1",
     "yamlify-object-colors": "^1.0.3",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "express": "^4.17.1",
     "husky": "^2.7.0",
-    "jest": "^26.1.0",
-    "playwright": "1.6.2",
+    "jest": "^26.6.3",
+    "playwright": "1.8.0",
     "wait-port": "^0.2.9"
   },
   "directories": {
