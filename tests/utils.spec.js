@@ -1,7 +1,8 @@
 const {
   matches,
   searchUrlKeys,
-  isPresentQueryParams
+  isPresentQueryParams,
+  getMockParamsByData
 } = require('../lib/utils');
 
 describe('mathches', () => {
@@ -50,5 +51,90 @@ describe('isPresentQueryParams', () => {
       test5: false
     };
     expect(isPresentQueryParams(url, queryParams)).toBeFalsy();
+  });
+});
+
+describe('getMockParamsByData', () => {
+  const postData = '{"a": {"c": 3}}';
+
+  it('without complex params', () => {
+    const mockParams = {
+      body: 'response',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    expect(getMockParamsByData(mockParams, postData)).toEqual(mockParams);
+  });
+
+  it('with success complex params', () => {
+    const mockParams = {
+      complex: [
+        {
+          filePath: "get_api",
+          requestBody: {
+            test: 'value_1',
+            param: 'value'
+          }
+        },
+        {
+          filePath: "get_api_2",
+          requestBody: {
+            a: {
+              c: 3
+            }
+          }
+        }
+      ]
+    }
+    expect(getMockParamsByData(mockParams, postData)).toBe('get_api_2');
+  });
+
+  it('not find complex params', () => {
+    const mockParams = {
+      complex: [
+        {
+          filePath: "get_api",
+          requestBody: {
+            test: 'value_1',
+            param: 'value'
+          }
+        },
+        {
+          filePath: "get_api_2",
+          requestBody: {
+            test: 'value_1',
+            param: 'value'
+          }
+        }
+      ]
+    }
+    expect(() => {
+      getMockParamsByData(mockParams, postData)
+    }).toThrow("Can't find any filePath route for requestBody params");
+  });
+
+  it('not find filePath field', () => {
+    const mockParams = {
+      complex: [
+        {
+          filePath: "get_api",
+          requestBody: {
+            test: 'value_1',
+            param: 'value'
+          }
+        },
+        {
+          requestBody: {
+            a: {
+              c: 3
+            }
+          }
+        }
+      ]
+    }
+    expect(() => {
+      getMockParamsByData(mockParams, postData)
+    }).toThrow("Can't find any filePath route for requestBody params");
   });
 });

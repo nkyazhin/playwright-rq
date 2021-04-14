@@ -1,6 +1,6 @@
 const path = require('path');
-const { spawn } = require('child_process');
-const { chromium } = require('playwright');
+const {spawn} = require('child_process');
+const {chromium} = require('playwright');
 const waitPort = require('wait-port');
 const mocker = require('..');
 jest.setTimeout(30000);
@@ -13,12 +13,12 @@ describe('mocker', () => {
   beforeAll(async () => {
     const serverPath = path.resolve(__dirname, 'server');
     browser = await chromium.launch({
-      // headless: false
+      headless: true
     });
     const context = await browser.newContext();
     page = await context.newPage();
-    server = spawn('node', [serverPath], { detached: true });
-    await waitPort({ host: 'localhost', port: 3000 });
+    server = spawn('node', [serverPath], {detached: true});
+    await waitPort({host: 'localhost', port: 3000});
   });
 
   afterAll(async () => {
@@ -105,6 +105,72 @@ describe('mocker', () => {
     expect(responseText).toEqual(responseBody);
   });
 
+  it('call with POST method', async () => {
+    const responseBody = '{"title":"mock_response"}';
+    await page.goto('http://localhost:3000');
+    await mocker.start({
+      namespace: 'tests/__remocks__',
+      page,
+      mockList: {
+        'api': {
+          POST: {
+            filePath: 'get_api'
+          }
+        }
+      }
+    });
+    await page.click('#button2');
+    await page.waitForSelector('.response-body');
+    await mocker.stop();
+    const responseText = await getText(page, '.response-body');
+    expect(responseText).toEqual(responseBody);
+  });
+
+  it('call with complex filter', async () => {
+    let responseBody = '{"title":"mock_response"}';
+    await page.goto('http://localhost:3000');
+    await mocker.start({
+      namespace: 'tests/__remocks__',
+      page,
+      mockList: {
+        'api': {
+          POST: {
+            complex: [
+              {
+                filePath: "get_api",
+                requestBody: {
+                  test: 'value_1',
+                  param: 'value'
+                }
+              },
+              {
+                filePath: "get_api_2",
+                requestBody: {
+                  test: 'value_2',
+                  param: 'value'
+                }
+              }
+            ]
+          }
+        }
+      }
+    });
+    await page.click('#button2');
+    await page.waitForSelector('.response-body');
+    let responseText = await getText(page, '.response-body');
+    expect(responseText).toEqual(responseBody);
+    // Second mock
+    responseBody = '{"title":"mock_response_2"}';
+    await page.refresh
+    await page.click('#button3');
+    await page.waitForSelector('.response-body');
+    await mocker.stop();
+    responseText = await getText(page, '.response-body');
+    expect(responseText).toEqual(responseBody);
+
+
+  });
+
   it('call with response headers', async () => {
     await page.goto('http://localhost:3000');
     await mocker.start({
@@ -133,8 +199,7 @@ describe('mocker', () => {
     await mocker.start({
       namespace: 'tests/__remocks__',
       page,
-      mockList: {
-      },
+      mockList: {},
       ci: true
     });
     await page.click('#button');
