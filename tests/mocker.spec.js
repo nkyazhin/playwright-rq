@@ -13,7 +13,7 @@ describe('mocker', () => {
   beforeAll(async () => {
     const serverPath = path.resolve(__dirname, 'server');
     browser = await chromium.launch({
-      headless: false
+      headless: true
     });
     const context = await browser.newContext();
     page = await context.newPage();
