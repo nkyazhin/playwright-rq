@@ -45,12 +45,14 @@ const options = {
     '_api/method4': {
       GET: {
         body: 'response',
+        statusCode: 200,
         headers: {
           'Content-Type': 'application/json'
         }
       },
       POST: {
         filePath: 'postMockFilePath',
+        statusCode: 200,
         headers: {
           'Content-Type': 'application/json'
         }

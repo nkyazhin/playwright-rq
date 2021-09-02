@@ -167,8 +167,6 @@ describe('mocker', () => {
     await mocker.stop();
     responseText = await getText(page, '.response-body');
     expect(responseText).toEqual(responseBody);
-
-
   });
 
   it('call with response headers', async () => {
@@ -193,6 +191,27 @@ describe('mocker', () => {
     const responseText = await getText(page, '.response-body');
     expect(responseText).toEqual('{"title":"mock_response"}');
   });
+
+  it('call with response code', async () => {
+    await page.goto('http://localhost:3000');
+    await mocker.start({
+      namespace: 'tests/__remocks__',
+      page,
+      mockList: {
+        'api': {
+          GET: {
+            filePath: 'get_api',
+            statusCode: 400
+          }
+        }
+      }
+    });
+    await page.click('#button');
+    await page.waitForSelector('.response-body');
+    await mocker.stop();
+    const responseText = await getText(page, '.response-code');
+    expect(responseText).toEqual('400');
+  })
 
   it('aborted response', async () => {
     await page.goto('http://localhost:3000');

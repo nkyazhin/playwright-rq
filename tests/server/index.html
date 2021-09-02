@@ -42,11 +42,13 @@
     <input type='button' id='button3' value="post_btn"/>
     <div class='response-body' hidden></div>
     <div class='response-headers' hidden></div>
+    <div class='response-code' hidden></div>
 </div>
 
 <script>
     const responseBody = document.querySelector('.response-body');
     const responseHeaders = document.querySelector('.response-headers');
+    const responseCode = document.querySelector('.response-code');
     document.querySelector('#button').addEventListener('click', (e) => {
         const query = e.target.value;
         fetch('/api?test=123&test2=false')
@@ -61,6 +63,8 @@
                   responseBody.hidden = false;
                 });
               responseHeaders.innerText = res.headers.get('Content-Type');
+              responseCode.innerText = res.status;
+              responseCode.hidden = false;
               responseHeaders.hidden = false;
             })
           .catch(error => {
