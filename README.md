@@ -12,9 +12,11 @@ npm i --save-dev playwright-rq
 ```
 
 ## Usage
+
 ### Mocker
 
 Allows you to mock for your network responses.
+
 ```ts
 import { Mocker } from 'playwright-rq';
 const mocker = new Mocker();
@@ -62,7 +64,7 @@ const options = {
   // Default interceptType = new Set(['xhr', 'fetch'])
   interceptType: new Set(['xhr', 'image']),
   // If could not find mock for request,
-  // and ci = true, then call route.abort(). 
+  // and ci = true, then call route.abort().
   // Default ci = false
   ci: true,
   // mockList = Record<string, RequestParams>
@@ -82,7 +84,7 @@ const options = {
   //   status: 200,
   //   headers: {
   //     'Content-Type': 'application/json; charset=UTF-8',
-  //   }, 
+  //   },
   // }
   mockList: {
     mockName: {
@@ -90,40 +92,42 @@ const options = {
       method: 'post',
       resopnse: {
         body: '{test:"1234"}',
-      }
+      },
     },
     test: {
       url: /api\/test/,
       method: 'get',
       queryParams: {
-        abst: '1234'
+        abst: '1234',
       },
       response: {
         status: 200,
-        filePath: 'test'
+        filePath: 'test',
       },
     },
     mockParams: {
       url: /api\/test/,
       method: 'get',
       bodyParams: {
-        abst: '1234'
+        abst: '1234',
       },
       response: {
         status: 200,
         headers: {
           'Content-Type': 'text/html; charset=utf-8',
         },
-        body: "text"
+        body: 'text',
       },
     },
   },
 };
 ```
+
 #### update options
 
 Updates mockList which you added to `mocker.statrt()`.
 If a mock with such a key already exists, it is updated, otherwise it adds.
+
 ```ts
 mocker.update({
   test: {
@@ -138,7 +142,9 @@ mocker.update({
 ```
 
 ### RequestListener
+
 Allows you to wait for a request, and return [Playwright Request](https://playwright.dev/docs/api/class-request) object.
+
 ```ts
 import { RequestListener } from 'playwright-rq';
 // start listener for request
@@ -148,6 +154,7 @@ await page.click('#button');
 const request = await requestListener.waitForRequest(3000);
 expect(request.postDataJSON()).toEqual({ test: '1234' });
 ```
+
 If the request is not found after the specified timeout, then we get an error: `Request "${url}" not found, after ${timeout}ms`
 
 ## Debug
