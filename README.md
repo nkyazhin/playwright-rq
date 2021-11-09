@@ -1,87 +1,156 @@
-playwright-rq
-=========
+# playwright-rq
+
 [![NPM version](https://img.shields.io/npm/v/playwright-rq.svg)](https://www.npmjs.com/package/playwright-rq)
 [![NPM Downloads](https://img.shields.io/npm/dm/playwright-rq.svg?style=flat)](https://www.npmjs.org/package/playwright-rq)
 
-If you are writing playwright tests, and you want to mock your network responses easily – then this package will help you.
-## Getting Started
-### Installing
-To use "Playwright-rq" in your project, run:
+If you are using playwright, and you need mock your network responses, then playwright-rq will help you!
+
+## Installing
+
 ```
 npm i --save-dev playwright-rq
 ```
-### Usage
-```js
-// first you need to import the package
-import mocker from 'playwright-rq';
-// start mocker with params
-await mocker.start(options);
 
-// and stop mocker after test run
+## Usage
+### Mocker
+
+Allows you to mock for your network responses.
+```ts
+import { Mocker } from 'playwright-rq';
+const mocker = new Mocker();
+// start mocker with options
+await mocker.start({
+  page,
+  mockList: {
+    test: {
+      url: 'http://localhost:3000/api',
+      method: 'GET',
+      response: {
+        body: 'test',
+        status: 200,
+      },
+    },
+  },
+});
+// update mocker params
+mocker.update({
+  test: {
+    url: 'http://localhost:3000/api',
+    method: 'GET',
+    response: {
+      body: 'test',
+      status: 200,
+    },
+  },
+});
+
+// stop mocker
 await mocker.stop();
-//Both `mocker.start()` and `mocker.stop()` return a `Promise`.
 ```
-You could use `options`
-```js
+
+#### start options
+
+```ts
 const options = {
   // playwright page
-  page: page,
-  // default namespace: '__remocks__'
-  namespace: 'mockDirPath',
+  page: Page,
+  // Indicates where are mocks. Default rootDir = '__remocks__'
+  // Absolute path = path.resolve(process.cwd(), rootDir)
+  rootDir: 'test/__remocks__',
+  // If interceptType does not contain playwright request.resourceType(),
+  // then call route.continue()
+  // Default interceptType = new Set(['xhr', 'fetch'])
+  interceptType: new Set(['xhr', 'image']),
+  // If could not find mock for request,
+  // and ci = true, then call route.abort(). 
+  // Default ci = false
+  ci: true,
+  // mockList = Record<string, RequestParams>
+  // interface RequestParams {
+  //   url: string | RegExp;
+  //   method: string;
+  //   queryParams?: Record<string, string>;
+  //   bodyParams?: Record<string, any>;
+  //   resopnse?: {
+  //     status?: number;
+  //     headers?: Record<string, string>;
+  //     body?: string;
+  //     filePath?: string;
+  //   }
+  // }
+  // Default resopnse = {
+  //   status: 200,
+  //   headers: {
+  //     'Content-Type': 'application/json; charset=UTF-8',
+  //   }, 
+  // }
   mockList: {
-    '_api/method': 'mockFilePath',
-    '_api/method2': {
-      GET: 'getMockFilePath',
-      POST: 'postMockFilePath'
-    },
-    '_api/method3': {
-      GET: {
-        body: 'response',
-        queryParams: {
-          test: '123'
-        }
+    mockName: {
+      url: '/api/test',
+      method: 'post',
+      resopnse: {
+        body: '{test:"1234"}',
       }
     },
-    '_api/method4': {
-      GET: {
-        body: 'response',
-        statusCode: 200,
-        headers: {
-          'Content-Type': 'application/json'
-        }
+    test: {
+      url: /api\/test/,
+      method: 'get',
+      queryParams: {
+        abst: '1234'
       },
-      POST: {
-        filePath: 'postMockFilePath',
-        statusCode: 200,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
+      response: {
+        status: 200,
+        filePath: 'test'
+      },
     },
-    '_api/method5': {
-      POST: {
-        complex: [
-          {
-            filePath: "get_api",
-            requestBody: {
-              test: 'value_1',
-              param: 'value'
-            }
-          },
-          {
-            filePath: "get_api_2",
-            requestBody: {
-              test: 'value_2',
-              param: 'value'
-            }
-          }
-        ]
-      }
-    }
+    mockParams: {
+      url: /api\/test/,
+      method: 'get',
+      bodyParams: {
+        abst: '1234'
+      },
+      response: {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+        },
+        body: "text"
+      },
+    },
   },
-  // default: false
-  // interruption of requests that are not in mockList and request.resourceType() == 'xhr' or 'fetch'
-  ci: true
-}
+};
+```
+#### update options
+
+Updates mockList which you added to `mocker.statrt()`.
+If a mock with such a key already exists, it is updated, otherwise it adds.
+```ts
+mocker.update({
+  test: {
+    url: 'http://localhost:3000/api',
+    method: 'GET',
+    response: {
+      body: 'test',
+      status: 200,
+    },
+  },
+});
 ```
 
+### RequestListener
+Allows you to wait for a request, and return [Playwright Request](https://playwright.dev/docs/api/class-request) object.
+```ts
+import { RequestListener } from 'playwright-rq';
+// start listener for request
+const requestListener = new RequestListener({ page, url: 'http://localhost:3000/api' });
+await page.click('#button');
+// wait request. Dafault timetout = 1000
+const request = await requestListener.waitForRequest(3000);
+expect(request.postDataJSON()).toEqual({ test: '1234' });
+```
+If the request is not found after the specified timeout, then we get an error: `Request "${url}" not found, after ${timeout}ms`
+
+## Debug
+
+`playwright-rq` uses `debug` package for logs.
+Example: `DEBUG=playwright-rq* npm run test`

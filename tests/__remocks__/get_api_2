@@ -1,3 +1,0 @@
-GET http://localhost:3004/api
-
-{"title": "mock_response_2"}
