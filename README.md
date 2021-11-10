@@ -80,7 +80,7 @@ const options = {
   //     filePath?: string;
   //   }
   // }
-  // Default resopnse = {
+  // Default response = {
   //   status: 200,
   //   headers: {
   //     'Content-Type': 'application/json; charset=UTF-8',
@@ -125,7 +125,7 @@ const options = {
 
 #### update options
 
-Updates mockList which you added to `mocker.statrt()`.
+Updates mockList which you added to `mocker.start()`.
 If a mock with such a key already exists, it is updated, otherwise it adds.
 
 ```ts

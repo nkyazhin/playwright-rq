@@ -1,5 +1,5 @@
 import { Page, Request } from '@playwright/test';
-import { searchRequest, TimeoutError, waitFor } from './searchRequst';
+import { searchRequest, TimeoutError, waitFor } from './searchRequest';
 import { RequestListenerOptions, URLMatch } from './types';
 
 class RequestListener {

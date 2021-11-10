@@ -7,6 +7,9 @@
     "test": "npx playwright test",
     "build": "tsc"
   },
+  "files": [
+    "dist/*.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nkyazhin/playwright-rq.git"
